@@ -5,6 +5,14 @@ import matplotlib.pyplot as plt
 
 for i in range(1, 8):
     number = str(i)
+
+    with open(f"input_files\sample_{number}.txt", 'r+') as file:
+        content = file.read()
+        new_content = '\n\nlambda, I\n' + content.replace('\t', ', ')
+        file.seek(0)
+        file.write(new_content)
+        file.truncate()
+
     spectrum_data = pd.read_csv(
         f"input_files\sample_{number}.txt",
         sep=",",
