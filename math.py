@@ -1,20 +1,26 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
-for i in range(1, 8):
-    number = str(i)
+folder_path = 'input_files'
+number = 0
 
-    with open(f"input_files\sample_{number}.txt", 'r+') as file:
+for filename in os.listdir(folder_path):
+    number += 1
+    file_path = os.path.join(folder_path, filename)
+
+    with open(file_path, 'r+') as file:
         content = file.read()
-        new_content = '\n\nlambda, I\n' + content.replace('\t', ', ')
-        file.seek(0)
-        file.write(new_content)
-        file.truncate()
+        if 'lambda, I' not in content:
+            new_content = '\n\nlambda, I\n' + content.replace('\t', ', ')
+            file.seek(0)
+            file.write(new_content)
+            file.truncate()
 
     spectrum_data = pd.read_csv(
-        f"input_files\sample_{number}.txt",
+        file_path,
         sep=",",
     )
 
@@ -32,10 +38,10 @@ for i in range(1, 8):
                f'$\lambda = {wavelength_list[intensity_list.index(max_intensity)]}$')
 
     plt.figure()
-    plt.title(fr"$I(\lambda)_{number}$")
+    plt.title(fr"$I(\lambda)_{str(number)}$")
     plt.plot(wavelength, intensity, '-', label=r"$I(\lambda)$",)
     plt.figtext(0.15, 0.8, comment, fontsize=11)
     plt.xlabel(r"$\lambda$", loc='right')
     plt.ylabel(r"$I$", loc='top')
     plt.legend()
-    plt.savefig(f"output_files\graph_{number}.jpg")
+    plt.savefig(f"output_files\graph_{str(number)}.jpg")
