@@ -44,4 +44,4 @@ for filename in os.listdir(folder_path):
     plt.xlabel(r"$\lambda$", loc='right')
     plt.ylabel(r"$I$", loc='top')
     plt.legend()
-    plt.savefig(f"output_files\graph_{str(number)}.jpg")
+    plt.savefig(f"output_files\graph_{filename}.jpg")
