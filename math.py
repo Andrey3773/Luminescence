@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import savgol_filter
 import os
 
 
@@ -24,18 +25,22 @@ for filename in os.listdir(folder_path):
         sep=",",
     )
 
-    wavelength_list = spectrum_data["lambda"].to_list()
+    wavelength_list = np.array(spectrum_data["lambda"].to_list())
+    intensity_list = np.array(spectrum_data[" I"].to_list())
 
-    intensity_list = spectrum_data[" I"].to_list()
-    max_intensity = max(intensity_list)
-    norm_intensity = [i / max_intensity for i in intensity_list]
+    intensity_list_smoothed = np.array(savgol_filter(intensity_list, 65, 2))
 
-    intensity = np.array(norm_intensity)
+    max_index = np.argmax(intensity_list_smoothed)
+    max_intensity = intensity_list_smoothed[max_index]
+    max_wavelength = wavelength_list[max_index]
+
+    norm_intensity = intensity_list_smoothed / max_intensity
+
     wavelength = np.array(wavelength_list)
-
+    intensity = np.array(intensity_list_smoothed)
 
     comment = (f'$max(I) = {max_intensity}$\n'
-               f'$\lambda = {wavelength_list[intensity_list.index(max_intensity)]}$')
+               f'$\lambda = {max_wavelength}$')
 
     plt.figure()
     plt.title(fr"$I(\lambda)_{str(number)}$")
